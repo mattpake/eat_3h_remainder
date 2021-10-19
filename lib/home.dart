@@ -1,6 +1,7 @@
 import 'package:clay_containers/widgets/clay_container.dart';
 import 'package:clay_containers/widgets/clay_text.dart';
 import 'package:eat_3h_remainder/main.dart';
+import 'package:eat_3h_remainder/second_page.dart';
 import 'package:flutter/material.dart';
 
 import 'hexcolor.dart';
@@ -16,6 +17,22 @@ class Remainder extends StatefulWidget {
 class _RemainderState extends State<Remainder> {
   final Color _white = const Color(0xFFF2F2F2);
   final Color _blue = HexColor("279AF1");
+
+  @override
+  void initState() {
+    super.initState();
+    NotificationApi.init();
+    listenNotifications();
+  }
+
+  void listenNotifications() =>
+      NotificationApi.onNotifications.stream.listen(onClickedNotification);
+
+  void onClickedNotification(String? payload) => Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => SecondPage(payload: payload),
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +76,7 @@ class _RemainderState extends State<Remainder> {
                     NotificationApi.showNotification(
                       title: 'Notification',
                       body: 'This gona work.',
-                      payload: 'payload',
+                      payload: 'payload message',
                     );
                   },
                   child: ClayContainer(

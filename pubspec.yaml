@@ -28,6 +28,7 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   flutter_local_notifications: ^9.0.0
+  rxdart: ^0.27.2
   flutter:
     sdk: flutter
   clay_containers:
