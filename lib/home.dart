@@ -21,7 +21,7 @@ class _RemainderState extends State<Remainder> {
   @override
   void initState() {
     super.initState();
-    NotificationApi.init();
+    NotificationApi.init(initScheduled: true);
     listenNotifications();
   }
 
@@ -70,7 +70,7 @@ class _RemainderState extends State<Remainder> {
                 padding: EdgeInsets.all(12.0),
               ),
               Padding(
-                padding: EdgeInsets.only(bottom: 300),
+                padding: EdgeInsets.only(bottom: 30),
                 child: InkWell(
                   onTap: () {
                     NotificationApi.showNotification(
@@ -87,6 +87,47 @@ class _RemainderState extends State<Remainder> {
                     child: Center(
                       child: ClayText(
                         "Simple notification",
+                        emboss: true,
+                        color: _white,
+                        parentColor: _white,
+                        depth: 100,
+                        style: const TextStyle(fontSize: 17),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 3),
+                child: InkWell(
+                  onTap: () {
+                    NotificationApi.showScheduleNotification(
+                      title: 'Scheduled Notification',
+                      body: 'This gona work.',
+                      payload: 'payload message',
+                      scheduleDate: DateTime.now().add(
+                        const Duration(seconds: 12),
+                      ),
+                    );
+                    const snackBar = SnackBar(
+                      content: Text(
+                        'Scheduled in 12 Seconds.',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                      backgroundColor: Colors.yellow,
+                    );
+                    ScaffoldMessenger.of(context)
+                    ..removeCurrentSnackBar()
+                    ..showSnackBar(snackBar);
+                  },
+                  child: ClayContainer(
+                    width: 350,
+                    height: 40,
+                    borderRadius: 7,
+                    surfaceColor: _white,
+                    child: Center(
+                      child: ClayText(
+                        "Scheduled notification",
                         emboss: true,
                         color: _white,
                         parentColor: _white,
