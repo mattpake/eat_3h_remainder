@@ -62,12 +62,21 @@ class NotificationApi {
         id,
         title,
         body,
-        tz.TZDateTime.from(scheduleDate, tz.local),
+        _scheduleDaily(Time(8)),
         await _notificationDetails(),
         payload: payload,
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
-        // matchDateTimeComponents: DateTimeComponents.time,
+        matchDateTimeComponents: DateTimeComponents.time,
       );
+
+  static tz.TZDateTime _scheduleDaily(Time time) {
+    final now = tz.TZDateTime.now(tz.local);
+    final scheduleDate = tz.TZDateTime(tz.local, now.year, now.month, now.day,
+        time.hour, time.minute, time.second);
+    return scheduleDate.isBefore(now)
+        ? scheduleDate.add(Duration(days: 1))
+        : scheduleDate;
+  }
 }
