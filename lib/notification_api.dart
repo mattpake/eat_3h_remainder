@@ -62,13 +62,13 @@ class NotificationApi {
         id,
         title,
         body,
-        _scheduleDaily(Time(8)),
+        _scheduleWeekly(Time(8), days: [DateTime.monday, DateTime.tuesday]),
         await _notificationDetails(),
         payload: payload,
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
-        matchDateTimeComponents: DateTimeComponents.time,
+        matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
       );
 
   static tz.TZDateTime _scheduleDaily(Time time) {
@@ -78,5 +78,14 @@ class NotificationApi {
     return scheduleDate.isBefore(now)
         ? scheduleDate.add(Duration(days: 1))
         : scheduleDate;
+  }
+
+  static tz.TZDateTime _scheduleWeekly(Time time, {required List<int> days}) {
+    tz.TZDateTime scheduleDate = _scheduleDaily(time);
+
+    while (!days.contains(scheduleDate.weekday)) {
+      scheduleDate = scheduleDate.add(Duration(days: 1));
+    }
+    return scheduleDate;
   }
 }
