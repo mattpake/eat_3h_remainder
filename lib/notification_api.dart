@@ -23,6 +23,8 @@ class NotificationApi {
   }
 
   static Future init({bool initScheduled = false}) async {
+    tz.initializeTimeZones();
+
     final android = AndroidInitializationSettings('@mipmap/ic_launcher');
     final iOS = IOSInitializationSettings();
     final settings = InitializationSettings(android: android, iOS: iOS);
@@ -34,16 +36,15 @@ class NotificationApi {
       },
     );
 
-    if (initScheduled) {
-      tz.initializeTimeZones();
+    // if (initScheduled) {
       // final locationName = await FlutterNativeTimeZone.getLocalTimezone(
       //   tz.setLocalLocation(tz.getLocation(locationName),),
       // );
-    }
+    // }
   }
 
   static Future showNotification({
-    int id = 0,
+    int id = 1,
     String? title,
     String? body,
     String? payload,
@@ -52,17 +53,18 @@ class NotificationApi {
           payload: payload);
 
   static void showScheduleNotification({
-    int id = 0,
+    int? id ,
     String? title,
     String? body,
     String? payload,
+    Time? time,
     required DateTime scheduleDate,
   }) async =>
       _notifications.zonedSchedule(
-        id,
+        id!,
         title,
         body,
-        _scheduleWeekly(Time(8), days: [DateTime.monday, DateTime.tuesday]),
+        _scheduleDaily(time!),
         await _notificationDetails(),
         payload: payload,
         androidAllowWhileIdle: true,
@@ -73,6 +75,7 @@ class NotificationApi {
 
   static tz.TZDateTime _scheduleDaily(Time time) {
     final now = tz.TZDateTime.now(tz.local);
+   print(now);
     final scheduleDate = tz.TZDateTime(tz.local, now.year, now.month, now.day,
         time.hour, time.minute, time.second);
     return scheduleDate.isBefore(now)
@@ -80,12 +83,12 @@ class NotificationApi {
         : scheduleDate;
   }
 
-  static tz.TZDateTime _scheduleWeekly(Time time, {required List<int> days}) {
-    tz.TZDateTime scheduleDate = _scheduleDaily(time);
-
-    while (!days.contains(scheduleDate.weekday)) {
-      scheduleDate = scheduleDate.add(Duration(days: 1));
-    }
-    return scheduleDate;
-  }
+//   static tz.TZDateTime _scheduleWeekly(Time time, {required List<int> days}) {
+//     tz.TZDateTime scheduleDate = _scheduleDaily(time);
+//
+//     while (!days.contains(scheduleDate.weekday)) {
+//       scheduleDate = scheduleDate.add(Duration(days: 1));
+//     }
+//     return scheduleDate;
+//   }
 }

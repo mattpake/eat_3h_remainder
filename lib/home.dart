@@ -3,6 +3,7 @@ import 'package:clay_containers/widgets/clay_text.dart';
 import 'package:eat_3h_remainder/main.dart';
 import 'package:eat_3h_remainder/second_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'hexcolor.dart';
 import 'notification_api.dart';
@@ -21,8 +22,31 @@ class _RemainderState extends State<Remainder> {
   @override
   void initState() {
     super.initState();
+
     NotificationApi.init(initScheduled: true);
     listenNotifications();
+
+    NotificationApi.showScheduleNotification(
+      id: 0,
+      title: 'Scheduled Notification',
+      body: 'This gona work.',
+      payload: 'payload message',
+      time: Time(9,17,10),
+      scheduleDate: DateTime.now().add(
+        const Duration(seconds: 12),
+      ),
+    );
+
+    NotificationApi.showScheduleNotification(
+      id:1,
+      title: 'Scheduled Notification',
+      body: 'This gona work 1.',
+      payload: 'payload message',
+      time: Time(9,17,20),
+      scheduleDate: DateTime.now().add(
+        const Duration(seconds: 12),
+      ),
+    );
   }
 
   void listenNotifications() =>
