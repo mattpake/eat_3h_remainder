@@ -4,7 +4,6 @@ import 'package:eat_3h_remainder/main.dart';
 import 'package:eat_3h_remainder/second_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
 import 'hexcolor.dart';
 import 'notification_api.dart';
 
@@ -28,10 +27,10 @@ class _RemainderState extends State<Remainder> {
 
     NotificationApi.showScheduleNotification(
       id: 0,
-      title: 'Scheduled Notification',
-      body: 'This gona work.',
-      payload: 'payload message',
-      time: Time(9,17,10),
+      title: 'Time to Eat',
+      body: "It's time for breakfast",
+      payload: "It's time for breakfast",
+      time: Time(7,0,0),
       scheduleDate: DateTime.now().add(
         const Duration(seconds: 12),
       ),
@@ -39,10 +38,10 @@ class _RemainderState extends State<Remainder> {
 
     NotificationApi.showScheduleNotification(
       id:1,
-      title: 'Scheduled Notification',
-      body: 'This gona work 1.',
-      payload: 'payload message',
-      time: Time(9,17,20),
+      title: 'Time to Eat',
+      body: "It's time for snack and protein.",
+      payload: 'You can grap some protein bar, or shake with soy bobs.',
+      time: Time(10,0,0),
       scheduleDate: DateTime.now().add(
         const Duration(seconds: 12),
       ),
@@ -127,7 +126,7 @@ class _RemainderState extends State<Remainder> {
                   onTap: () {
                     NotificationApi.showScheduleNotification(
                       title: 'Scheduled Notification',
-                      body: 'This gona work.',
+                      body: 'This gonna work.',
                       payload: 'payload message',
                       scheduleDate: DateTime.now().add(
                         const Duration(seconds: 12),
