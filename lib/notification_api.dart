@@ -2,12 +2,11 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 
 class NotificationApi {
   static final _notifications = FlutterLocalNotificationsPlugin();
   static final onNotifications = BehaviorSubject<String?>();
-
-  // var android = const AndroidInitializationSettings('app_icon');
 
   static Future _notificationDetails() async {
     return const NotificationDetails(
@@ -23,6 +22,11 @@ class NotificationApi {
   }
 
   static Future init({bool initScheduled = false}) async {
+    tz.initializeTimeZones();
+
+    // final String currentTimeZone =
+    //     await FlutterNativeTimezone.getLocalTimezone();
+
     final android = AndroidInitializationSettings('@mipmap/ic_launcher');
     final iOS = IOSInitializationSettings();
     final settings = InitializationSettings(android: android, iOS: iOS);
@@ -34,16 +38,16 @@ class NotificationApi {
       },
     );
 
-    if (initScheduled) {
-      tz.initializeTimeZones();
-      // final locationName = await FlutterNativeTimeZone.getLocalTimezone(
-      //   tz.setLocalLocation(tz.getLocation(locationName),),
-      // );
-    }
+    // if (initScheduled) {
+    //   final locationName = FlutterNativeTimeZone.getLocalTimezone(
+    //     tz.setLocalLocation(tz.getLocation(locationName),
+    //     ),
+    //   );
+    // }
   }
 
   static Future showNotification({
-    int id = 0,
+    int id = 1,
     String? title,
     String? body,
     String? payload,
@@ -52,40 +56,43 @@ class NotificationApi {
           payload: payload);
 
   static void showScheduleNotification({
-    int id = 0,
+    int? id,
     String? title,
     String? body,
     String? payload,
+    Time? time,
     required DateTime scheduleDate,
   }) async =>
       _notifications.zonedSchedule(
-        id,
+        id!,
         title,
         body,
-        _scheduleWeekly(Time(8), days: [DateTime.monday, DateTime.tuesday]),
+        _scheduleDaily(time!, await FlutterNativeTimezone.getLocalTimezone()),
         await _notificationDetails(),
         payload: payload,
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
-        matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
+        matchDateTimeComponents: DateTimeComponents.time,
       );
 
-  static tz.TZDateTime _scheduleDaily(Time time) {
-    final now = tz.TZDateTime.now(tz.local);
-    final scheduleDate = tz.TZDateTime(tz.local, now.year, now.month, now.day,
-        time.hour, time.minute, time.second);
+  static tz.TZDateTime _scheduleDaily(Time time, String localTimezone) {
+
+    final now = tz.TZDateTime.now(tz.getLocation(localTimezone));
+
+    final scheduleDate = tz.TZDateTime(tz.getLocation(localTimezone), now.year,
+        now.month, now.day, time.hour, time.minute, time.second);
     return scheduleDate.isBefore(now)
         ? scheduleDate.add(Duration(days: 1))
         : scheduleDate;
   }
 
-  static tz.TZDateTime _scheduleWeekly(Time time, {required List<int> days}) {
-    tz.TZDateTime scheduleDate = _scheduleDaily(time);
-
-    while (!days.contains(scheduleDate.weekday)) {
-      scheduleDate = scheduleDate.add(Duration(days: 1));
-    }
-    return scheduleDate;
-  }
+//   static tz.TZDateTime _scheduleWeekly(Time time, {required List<int> days}) {
+//     tz.TZDateTime scheduleDate = _scheduleDaily(time);
+//
+//     while (!days.contains(scheduleDate.weekday)) {
+//       scheduleDate = scheduleDate.add(Duration(days: 1));
+//     }
+//     return scheduleDate;
+//   }
 }

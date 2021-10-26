@@ -29,6 +29,7 @@ environment:
 dependencies:
   flutter_local_notifications: ^9.0.0
   rxdart: ^0.27.2
+  flutter_native_timezone: ^2.0.0
   flutter:
     sdk: flutter
   clay_containers:
