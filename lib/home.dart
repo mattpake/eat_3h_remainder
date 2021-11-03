@@ -30,7 +30,7 @@ class _RemainderState extends State<Remainder> {
       title: 'Time to Eat',
       body: "It's time for breakfast.",
       payload: "It's time for breakfast",
-      time: Time(7, 0, 0),
+      time: const Time(7, 0, 0),
       scheduleDate: DateTime.now(),
     );
 
@@ -39,7 +39,7 @@ class _RemainderState extends State<Remainder> {
       title: 'Time to Eat',
       body: "It's time for snack and protein.",
       payload: 'You can grab some protein bar, or shake with soy bobs.',
-      time: Time(10, 0, 0),
+      time: const Time(10, 0, 0),
       scheduleDate: DateTime.now(),
     );
 
@@ -48,7 +48,7 @@ class _RemainderState extends State<Remainder> {
       title: 'Time to Eat',
       body: "It's time for lunch.",
       payload: "It's time for lunch.",
-      time: Time(12, 0, 0),
+      time: const Time(12, 0, 0),
       scheduleDate: DateTime.now(),
     );
 
@@ -58,7 +58,7 @@ class _RemainderState extends State<Remainder> {
       body: "It's time for snack and protein.",
       payload:
           "Depend when you plan go to gym you can have protein shake and some snack.",
-      time: Time(14, 0, 0),
+      time: const Time(14, 0, 0),
       scheduleDate: DateTime.now(),
     );
 
@@ -67,7 +67,7 @@ class _RemainderState extends State<Remainder> {
       title: 'Time to Eat',
       body: "It's time for post workout meal.",
       payload: "It's time for post workout meal.",
-      time: Time(17, 0, 0),
+      time: const Time(17, 0, 0),
       scheduleDate: DateTime.now(),
     );
 
@@ -76,7 +76,7 @@ class _RemainderState extends State<Remainder> {
       title: 'Time to Eat',
       body: "It's time for dinner.",
       payload: "If you don't feel hunger micellar protein with bobs will do.",
-      time: Time(20, 0, 0),
+      time: const Time(20, 0, 0),
       scheduleDate: DateTime.now(),
     );
   }
@@ -101,7 +101,7 @@ class _RemainderState extends State<Remainder> {
           parentColor: _white,
           textColor: _blue,
           depth: 100,
-          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         backgroundColor: _white,
@@ -110,95 +110,107 @@ class _RemainderState extends State<Remainder> {
       body: Builder(
         builder: (BuildContext context) => Container(
           child: Column(
-            // mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Padding(
-              //   padding: EdgeInsets.only(bottom: 100),
-              //   child: Center(
-              //     child: Image.asset(
-              //       "images/hungry.png",
-              //       width: 250,
-              //       height: 180,
-              //     ),
-              //   ),
-              // ),
-              // const Padding(
-              //   padding: EdgeInsets.all(12.0),
-              // ),
-              // Padding(
-              //   padding: EdgeInsets.only(bottom: 30),
-              //   child: InkWell(
-              //     onTap: () {
-              //       NotificationApi.showNotification(
-              //         title: 'Notification',
-              //         body: 'This gona work.',
-              //         payload: 'payload message',
-              //       );
-              //     },
-              //     child: ClayContainer(
-              //       width: 350,
-              //       height: 40,
-              //       borderRadius: 7,
-              //       surfaceColor: _white,
-              //       child: Center(
-              //         child: ClayText(
-              //           "Simple notification",
-              //           emboss: true,
-              //           color: _white,
-              //           parentColor: _white,
-              //           depth: 100,
-              //           style: const TextStyle(fontSize: 17),
-              //         ),
-              //       ),
-              //     ),
-              //   ),
-              // ),
               Container(
-                padding: EdgeInsets.all(12),
+                padding: const EdgeInsets.all(12),
                 child: Card(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(24),
-                      side: BorderSide(color: Colors.white)),
+                      side: const BorderSide(color: Colors.white)),
                   child: Material(
                     color: Colors.white,
                     elevation: 14.0,
                     borderRadius: BorderRadius.circular(24.0),
-                    shadowColor: Color(0x802196F3),
+                    shadowColor: const Color(0x802196F3),
                     child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 20),
+                      padding: const EdgeInsets.symmetric(vertical: 20),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Row(
-                            children: [
-                              Image(
-                                image: Image.asset(
-                                  "images/hungry.png",
-                                  width: 250,
-                                  height: 180,
-                                ).image,
-                                height: 80,
-                                // color: Colors.black,
+                          const Padding(
+                            padding: EdgeInsets.only(left: 16.0),
+                            child: Align(
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                'First Notification',
+                                style: TextStyle(
+                                  color: Colors.black45,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 23,
+                                ),
                               ),
-                              SizedBox(
-                                width: 10,
-                              )
-                            ],
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            ),
                           ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Align(
-//                              padding: EdgeInsets.symmetric(vertical: 30),
-                            alignment: Alignment.center,
-                            child: Text(
-                              'First Notification',
-                              style: TextStyle(
-                                color: Colors.black45,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 23,
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20, right: 12),
+                            child: TextFormField(
+                              decoration: const InputDecoration(
+                                labelText: "Title",
+                                fillColor: Colors.white,
                               ),
+                              validator: (val) {
+                                debugPrint(val);
+                                if (val!.isEmpty) {
+                                  return "Email cannot be empty";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              keyboardType: TextInputType.emailAddress,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20, right: 12),
+                            child: TextFormField(
+                              decoration: const InputDecoration(
+                                labelText: "Description",
+                                fillColor: Colors.white,
+                              ),
+                              onChanged: (String? value) {
+                                print(value);
+                              },
+                              validator: (val) {
+                                if (val!.isEmpty) {
+                                  return "Email cannot be empty";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              keyboardType: TextInputType.emailAddress,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20, right: 12),
+                            child: TextFormField(
+                              decoration: const InputDecoration(
+                                labelText: "Payload",
+                                fillColor: Colors.white,
+                              ),
+                              validator: (val) {
+                                if (val!.isEmpty) {
+                                  return "Email cannot be empty";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              keyboardType: TextInputType.emailAddress,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20, right: 12),
+                            child: TextFormField(
+                              decoration: const InputDecoration(
+                                labelText: "Time",
+                                fillColor: Colors.white,
+                              ),
+                              validator: (val) {
+                                if (val!.isEmpty) {
+                                  return "Email cannot be empty";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              keyboardType: TextInputType.emailAddress,
                             ),
                           ),
                         ],
