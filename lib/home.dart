@@ -1,7 +1,7 @@
 import 'package:clay_containers/widgets/clay_container.dart';
 import 'package:clay_containers/widgets/clay_text.dart';
-import 'package:eat_3h_remainder/main.dart';
 import 'package:eat_3h_remainder/second_page.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'hexcolor.dart';
@@ -15,6 +15,9 @@ class Remainder extends StatefulWidget {
 }
 
 class _RemainderState extends State<Remainder> {
+  TimeOfDay selectedTime = TimeOfDay.now();
+  DateTime _dateTime = DateTime.now();
+
   final Color _white = const Color(0xFFF2F2F2);
   final Color _blue = HexColor("279AF1");
 
@@ -148,10 +151,12 @@ class _RemainderState extends State<Remainder> {
                                 labelText: "Title",
                                 fillColor: Colors.white,
                               ),
+                              onChanged: (String? value) {
+                                print(value);
+                              },
                               validator: (val) {
-                                debugPrint(val);
                                 if (val!.isEmpty) {
-                                  return "Email cannot be empty";
+                                  return "Title cannot be empty";
                                 } else {
                                   return null;
                                 }
@@ -171,7 +176,7 @@ class _RemainderState extends State<Remainder> {
                               },
                               validator: (val) {
                                 if (val!.isEmpty) {
-                                  return "Email cannot be empty";
+                                  return "Description cannot be empty";
                                 } else {
                                   return null;
                                 }
@@ -197,20 +202,26 @@ class _RemainderState extends State<Remainder> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(left: 20, right: 12),
-                            child: TextFormField(
-                              decoration: const InputDecoration(
-                                labelText: "Time",
-                                fillColor: Colors.white,
-                              ),
-                              validator: (val) {
-                                if (val!.isEmpty) {
-                                  return "Email cannot be empty";
-                                } else {
-                                  return null;
-                                }
-                              },
-                              keyboardType: TextInputType.emailAddress,
+                            padding: const EdgeInsets.only(
+                                left: 20, right: 12, top: 15),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                ElevatedButton(
+                                  onPressed: () {
+                                    _selectTime(context);
+                                    // print(selectedTime.minute
+                                    //     .toString()
+                                    //     .padLeft(2, '0'));
+                                  },
+                                  child: Text(
+                                    "${selectedTime.hour}:${selectedTime.minute.toString().padLeft(2, '0')}",
+                                    style: const TextStyle(fontSize: 33),
+                                  ),
+                                ),
+                                // Text(
+                                //     "${selectedTime.hour}:${selectedTime.minute}"),
+                              ],
                             ),
                           ),
                         ],
@@ -265,5 +276,23 @@ class _RemainderState extends State<Remainder> {
         ),
       ),
     );
+  }
+
+  _selectTime(BuildContext context) async {
+    final TimeOfDay? timeOfDay = await showTimePicker(
+      context: context,
+      initialTime: selectedTime,
+      initialEntryMode: TimePickerEntryMode.dial,
+      confirmText: "CONFIRM",
+      cancelText: "NOT NOW",
+      helpText: "",
+    );
+    if (timeOfDay != null && timeOfDay != selectedTime) {
+      setState(
+        () {
+          selectedTime = timeOfDay;
+        },
+      );
+    }
   }
 }
