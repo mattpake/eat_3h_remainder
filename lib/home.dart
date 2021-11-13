@@ -1,5 +1,7 @@
 import 'package:clay_containers/widgets/clay_container.dart';
 import 'package:clay_containers/widgets/clay_text.dart';
+import 'package:eat_3h_remainder/models.dart';
+import 'package:eat_3h_remainder/preferences_service.dart';
 import 'package:eat_3h_remainder/second_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,15 +17,39 @@ class Remainder extends StatefulWidget {
 }
 
 class _RemainderState extends State<Remainder> {
+  final _preferencesService = PreferencesService();
+
   TimeOfDay selectedTime = TimeOfDay.now();
-  DateTime _dateTime = DateTime.now();
 
   final Color _white = const Color(0xFFF2F2F2);
   final Color _blue = HexColor("279AF1");
+  final Color _yellow = HexColor("EAB464");
+
+  final _firstNotificationTitleController = TextEditingController();
+  final _firstNotificationBodyController = TextEditingController();
+  final _firstNotificationDescriptionController = TextEditingController();
+  var _firstNotificationHour;
+  var _firstNotificationMinute;
+
+  void _populateFields() async {
+    final settings = await _preferencesService.getFirstSettings();
+    setState(() {
+      _firstNotificationTitleController.text = settings.title;
+      _firstNotificationBodyController.text = settings.description;
+      _firstNotificationDescriptionController.text = settings.payload;
+      _firstNotificationHour = settings.hour;
+      _firstNotificationMinute = settings.minute;
+      selectedTime = settings.time;
+    });
+  }
 
   @override
   void initState() {
+    _populateFields();
     super.initState();
+
+    void listenNotifications() =>
+        NotificationApi.onNotifications.stream.listen(onClickedNotification);
 
     NotificationApi.init(initScheduled: true);
     listenNotifications();
@@ -37,14 +63,14 @@ class _RemainderState extends State<Remainder> {
       scheduleDate: DateTime.now(),
     );
 
-    NotificationApi.showScheduleNotification(
-      id: 1,
-      title: 'Time to Eat',
-      body: "It's time for snack and protein.",
-      payload: 'You can grab some protein bar, or shake with soy bobs.',
-      time: const Time(10, 0, 0),
-      scheduleDate: DateTime.now(),
-    );
+    // NotificationApi.showScheduleNotification(
+    //   id: 1,
+    //   title: 'Time to Eat',
+    //   body: "It's time for snack and protein.",
+    //   payload: 'You can grab some protein bar, or shake with soy bobs.',
+    //   time: const Time(10, 0, 0),
+    //   scheduleDate: DateTime.now(),
+    // );
 
     NotificationApi.showScheduleNotification(
       id: 2,
@@ -147,13 +173,11 @@ class _RemainderState extends State<Remainder> {
                           Padding(
                             padding: const EdgeInsets.only(left: 20, right: 12),
                             child: TextFormField(
+                              controller: _firstNotificationTitleController,
                               decoration: const InputDecoration(
                                 labelText: "Title",
                                 fillColor: Colors.white,
                               ),
-                              onChanged: (String? value) {
-                                print(value);
-                              },
                               validator: (val) {
                                 if (val!.isEmpty) {
                                   return "Title cannot be empty";
@@ -161,19 +185,37 @@ class _RemainderState extends State<Remainder> {
                                   return null;
                                 }
                               },
-                              keyboardType: TextInputType.emailAddress,
+                              keyboardType: TextInputType.text,
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left: 20, right: 12),
                             child: TextFormField(
+                              controller: _firstNotificationBodyController,
+                              decoration: const InputDecoration(
+                                labelText: "Body",
+                                fillColor: Colors.white,
+                              ),
+                              validator: (val) {
+                                if (val!.isEmpty) {
+                                  return "Body cannot be empty";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              keyboardType: TextInputType.text,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20, right: 12),
+                            child: TextFormField(
+                              // keyboardType: TextInputType.number,
+                              controller:
+                                  _firstNotificationDescriptionController,
                               decoration: const InputDecoration(
                                 labelText: "Description",
                                 fillColor: Colors.white,
                               ),
-                              onChanged: (String? value) {
-                                print(value);
-                              },
                               validator: (val) {
                                 if (val!.isEmpty) {
                                   return "Description cannot be empty";
@@ -181,24 +223,7 @@ class _RemainderState extends State<Remainder> {
                                   return null;
                                 }
                               },
-                              keyboardType: TextInputType.emailAddress,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 20, right: 12),
-                            child: TextFormField(
-                              decoration: const InputDecoration(
-                                labelText: "Payload",
-                                fillColor: Colors.white,
-                              ),
-                              validator: (val) {
-                                if (val!.isEmpty) {
-                                  return "Email cannot be empty";
-                                } else {
-                                  return null;
-                                }
-                              },
-                              keyboardType: TextInputType.emailAddress,
+                              keyboardType: TextInputType.text,
                             ),
                           ),
                           Padding(
@@ -209,14 +234,48 @@ class _RemainderState extends State<Remainder> {
                               children: <Widget>[
                                 ElevatedButton(
                                   onPressed: () {
+                                    // _firstNotificationHour = selectedTime.hour;
                                     _selectTime(context);
-                                    // print(selectedTime.minute
-                                    //     .toString()
-                                    //     .padLeft(2, '0'));
+                                    // print("selected time: ${selectedTime.format()}");
                                   },
                                   child: Text(
-                                    "${selectedTime.hour}:${selectedTime.minute.toString().padLeft(2, '0')}",
+                                    "${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}",
                                     style: const TextStyle(fontSize: 33),
+                                  ),
+                                ),
+                                // Text(
+                                //     "${selectedTime.hour}:${selectedTime.minute}"),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 20, right: 12, top: 0, bottom: 0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    _savedSettingsFirstNotification();
+                                    NotificationApi.showScheduleNotification(
+                                      id: 1,
+                                      title: _firstNotificationTitleController
+                                          .text,
+                                      body:
+                                          _firstNotificationBodyController.text,
+                                      payload:
+                                          _firstNotificationDescriptionController
+                                              .text,
+                                      time: Time(selectedTime.hour,
+                                          selectedTime.minute, 0),
+                                      scheduleDate: DateTime.now(),
+                                    );
+                                    _titleAndBodyIsEmpty(
+                                        _firstNotificationTitleController.text,
+                                        _firstNotificationBodyController.text);
+                                  },
+                                  child: const Text(
+                                    'Schedule Notification',
                                   ),
                                 ),
                                 // Text(
@@ -291,8 +350,40 @@ class _RemainderState extends State<Remainder> {
       setState(
         () {
           selectedTime = timeOfDay;
+          _firstNotificationHour = selectedTime.hour;
+          _firstNotificationMinute = selectedTime.minute;
         },
       );
     }
+  }
+
+  _titleAndBodyIsEmpty(String title, String body) {
+    if (title.isEmpty && body.isEmpty) {
+      final snackBar = SnackBar(
+        content: const Text(
+          'Notification could not be scheduled without Title or Body.',
+          style: TextStyle(fontSize: 24),
+        ),
+        backgroundColor: _yellow,
+      );
+      ScaffoldMessenger.of(context)
+        ..removeCurrentSnackBar()
+        ..showSnackBar(snackBar);
+    }
+  }
+
+  void _savedSettingsFirstNotification() {
+    final newSettingsFirstNotification = SettingsFirstNotification(
+        _firstNotificationTitleController.text,
+        _firstNotificationBodyController.text,
+        _firstNotificationDescriptionController.text,
+        _firstNotificationHour,
+        _firstNotificationMinute,
+        selectedTime);
+
+    print(newSettingsFirstNotification);
+    _preferencesService.saveFirstSettings(newSettingsFirstNotification);
+
+    print('Time hour: $_firstNotificationHour');
   }
 }
