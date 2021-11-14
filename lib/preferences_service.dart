@@ -32,6 +32,19 @@ class PreferencesService {
     print('Saved Settings');
   }
 
+  Future saveThirdSettings(SettingsNotification settings) async {
+    final preferences = await SharedPreferences.getInstance();
+
+    await preferences.setString('thirdNotificationTitle', settings.title);
+    await preferences.setString(
+        'thirdNotificationDescription', settings.description);
+    await preferences.setString('thirdNotificationPayload', settings.payload);
+    await preferences.setInt('thirdNotificationHour', settings.hour);
+    await preferences.setInt('thirdNotificationMinute', settings.minute);
+
+    print('Saved Settings');
+  }
+
   Future<SettingsNotification> getFirstSettings() async {
     final preferences = await SharedPreferences.getInstance();
     final title = preferences.getString('firstNotificationTitle');
@@ -52,6 +65,19 @@ class PreferencesService {
     final payload = preferences.getString('secondNotificationPayload');
     final hour = preferences.getInt('secondNotificationHour');
     final minute = preferences.getInt('secondNotificationMinute');
+    TimeOfDay time = TimeOfDay(hour: hour ?? _timeOfDay.hour, minute: minute ?? _timeOfDay.minute);
+
+    return SettingsNotification(
+        title?? '', description?? '', payload?? '', hour ?? _timeOfDay.hour, minute ?? _timeOfDay.minute, time);
+  }
+
+  Future<SettingsNotification> getThirdSettings() async {
+    final preferences = await SharedPreferences.getInstance();
+    final title = preferences.getString('thirdNotificationTitle');
+    final description = preferences.getString('thirdNotificationDescription');
+    final payload = preferences.getString('thirdNotificationPayload');
+    final hour = preferences.getInt('thirdNotificationHour');
+    final minute = preferences.getInt('thirdNotificationMinute');
     TimeOfDay time = TimeOfDay(hour: hour ?? _timeOfDay.hour, minute: minute ?? _timeOfDay.minute);
 
     return SettingsNotification(

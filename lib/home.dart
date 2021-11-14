@@ -21,6 +21,7 @@ class _RemainderState extends State<Remainder> {
 
   TimeOfDay selectedTimeFirstNotification = TimeOfDay.now();
   TimeOfDay selectedTimeSecondNotification = TimeOfDay.now();
+  TimeOfDay selectedTimeThirdNotification = TimeOfDay.now();
 
   final Color _white = const Color(0xFFF2F2F2);
   final Color _blue = HexColor("279AF1");
@@ -40,9 +41,16 @@ class _RemainderState extends State<Remainder> {
   var _secondNotificationHour;
   var _secondNotificationMinute;
 
+  final _thirdNotificationTitleController = TextEditingController();
+  final _thirdNotificationBodyController = TextEditingController();
+  final _thirdNotificationDescriptionController = TextEditingController();
+  var _thirdNotificationHour;
+  var _thirdNotificationMinute;
+
   void _populateFields() async {
     final firstSettings = await _preferencesService.getFirstSettings();
     final secondSettings = await _preferencesService.getSecondSettings();
+    final thirdSettings = await _preferencesService.getThirdSettings();
 
     setState(() {
       _firstNotificationTitleController.text = firstSettings.title;
@@ -58,6 +66,13 @@ class _RemainderState extends State<Remainder> {
       _secondNotificationHour = secondSettings.hour;
       _secondNotificationMinute = secondSettings.minute;
       selectedTimeSecondNotification = secondSettings.time;
+
+      _thirdNotificationTitleController.text = thirdSettings.title;
+      _thirdNotificationBodyController.text = thirdSettings.description;
+      _thirdNotificationDescriptionController.text = thirdSettings.payload;
+      _thirdNotificationHour = thirdSettings.hour;
+      _thirdNotificationMinute = thirdSettings.minute;
+      selectedTimeThirdNotification = thirdSettings.time;
     });
   }
 
@@ -71,61 +86,6 @@ class _RemainderState extends State<Remainder> {
 
     NotificationApi.init(initScheduled: true);
     listenNotifications();
-
-    NotificationApi.showScheduleNotification(
-      id: 0,
-      title: 'Time to Eat',
-      body: "It's time for breakfast.",
-      payload: "It's time for breakfast",
-      time: const Time(7, 0, 0),
-      scheduleDate: DateTime.now(),
-    );
-
-    // NotificationApi.showScheduleNotification(
-    //   id: 1,
-    //   title: 'Time to Eat',
-    //   body: "It's time for snack and protein.",
-    //   payload: 'You can grab some protein bar, or shake with soy bobs.',
-    //   time: const Time(10, 0, 0),
-    //   scheduleDate: DateTime.now(),
-    // );
-
-    NotificationApi.showScheduleNotification(
-      id: 2,
-      title: 'Time to Eat',
-      body: "It's time for lunch.",
-      payload: "It's time for lunch.",
-      time: const Time(12, 0, 0),
-      scheduleDate: DateTime.now(),
-    );
-
-    NotificationApi.showScheduleNotification(
-      id: 3,
-      title: 'Time to Eat',
-      body: "It's time for snack and protein.",
-      payload:
-          "Depend when you plan go to gym you can have protein shake and some snack.",
-      time: const Time(14, 0, 0),
-      scheduleDate: DateTime.now(),
-    );
-
-    NotificationApi.showScheduleNotification(
-      id: 4,
-      title: 'Time to Eat',
-      body: "It's time for post workout meal.",
-      payload: "It's time for post workout meal.",
-      time: const Time(17, 0, 0),
-      scheduleDate: DateTime.now(),
-    );
-
-    NotificationApi.showScheduleNotification(
-      id: 5,
-      title: 'Time to Eat',
-      body: "It's time for dinner.",
-      payload: "If you don't feel hunger micellar protein with bobs will do.",
-      time: const Time(20, 0, 0),
-      scheduleDate: DateTime.now(),
-    );
   }
 
   void listenNotifications() =>
@@ -474,6 +434,164 @@ class _RemainderState extends State<Remainder> {
                     ),
                   ),
                 ),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                        side: const BorderSide(color: Colors.white)),
+                    child: Material(
+                      color: Colors.white,
+                      elevation: 14.0,
+                      borderRadius: BorderRadius.circular(24.0),
+                      shadowColor: const Color(0x802196F3),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(left: 16.0),
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  ' Lunch ',
+                                  style: TextStyle(
+                                    backgroundColor: _black,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 23,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 20, right: 12),
+                              child: TextFormField(
+                                controller: _thirdNotificationTitleController,
+                                decoration: const InputDecoration(
+                                  labelText: "Title",
+                                  fillColor: Colors.white,
+                                ),
+                                validator: (val) {
+                                  if (val!.isEmpty) {
+                                    return "Title cannot be empty";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                keyboardType: TextInputType.text,
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 20, right: 12),
+                              child: TextFormField(
+                                controller: _thirdNotificationBodyController,
+                                decoration: const InputDecoration(
+                                  labelText: "Body",
+                                  fillColor: Colors.white,
+                                ),
+                                validator: (val) {
+                                  if (val!.isEmpty) {
+                                    return "Body cannot be empty";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                keyboardType: TextInputType.text,
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 20, right: 12),
+                              child: TextFormField(
+                                // keyboardType: TextInputType.number,
+                                controller:
+                                    _thirdNotificationDescriptionController,
+                                decoration: const InputDecoration(
+                                  labelText: "Description",
+                                  fillColor: Colors.white,
+                                ),
+                                validator: (val) {
+                                  if (val!.isEmpty) {
+                                    return "Description cannot be empty";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                keyboardType: TextInputType.text,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 20, right: 12, top: 15),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      // _firstNotificationHour = selectedTime.hour;
+                                      _selectTimeThirdNotification(context);
+                                      // print("selected time: ${selectedTime.format()}");
+                                    },
+                                    child: Text(
+                                      "${selectedTimeThirdNotification.hour.toString().padLeft(2, '0')}:${selectedTimeThirdNotification.minute.toString().padLeft(2, '0')}",
+                                      style: const TextStyle(fontSize: 33),
+                                    ),
+                                  ),
+                                  // Text(
+                                  //     "${selectedTime.hour}:${selectedTime.minute}"),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 20, right: 12, top: 0, bottom: 0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      _savedSettingsThirdNotification();
+                                      NotificationApi.showScheduleNotification(
+                                        id: 1,
+                                        title: _thirdNotificationTitleController
+                                            .text,
+                                        body: _thirdNotificationBodyController
+                                            .text,
+                                        payload:
+                                            _thirdNotificationDescriptionController
+                                                .text,
+                                        time: Time(
+                                            selectedTimeThirdNotification.hour,
+                                            selectedTimeThirdNotification
+                                                .minute,
+                                            0),
+                                        scheduleDate: DateTime.now(),
+                                      );
+                                      _titleAndBodyIsEmpty(
+                                          _thirdNotificationTitleController
+                                              .text,
+                                          _thirdNotificationBodyController
+                                              .text);
+                                    },
+                                    child: const Text(
+                                      'Schedule Notification',
+                                    ),
+                                  ),
+                                  // Text(
+                                  //     "${selectedTime.hour}:${selectedTime.minute}"),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -522,6 +640,26 @@ class _RemainderState extends State<Remainder> {
     }
   }
 
+  _selectTimeThirdNotification(BuildContext context) async {
+    final TimeOfDay? timeOfDay = await showTimePicker(
+      context: context,
+      initialTime: selectedTimeThirdNotification,
+      initialEntryMode: TimePickerEntryMode.dial,
+      confirmText: "CONFIRM",
+      cancelText: "NOT NOW",
+      helpText: "",
+    );
+    if (timeOfDay != null && timeOfDay != selectedTimeThirdNotification) {
+      setState(
+        () {
+          selectedTimeThirdNotification = timeOfDay;
+          _thirdNotificationHour = selectedTimeThirdNotification.hour;
+          _thirdNotificationMinute = selectedTimeThirdNotification.minute;
+        },
+      );
+    }
+  }
+
   void _savedSettingsFirstNotification() {
     final newSettingsFirstNotification = SettingsNotification(
         _firstNotificationTitleController.text,
@@ -531,10 +669,7 @@ class _RemainderState extends State<Remainder> {
         _firstNotificationMinute,
         selectedTimeFirstNotification);
 
-    print(newSettingsFirstNotification);
     _preferencesService.saveFirstSettings(newSettingsFirstNotification);
-
-    print('Time hour: $_firstNotificationHour');
   }
 
   void _savedSettingsSecondNotification() {
@@ -546,10 +681,19 @@ class _RemainderState extends State<Remainder> {
         _secondNotificationMinute,
         selectedTimeSecondNotification);
 
-    print(newSettingsSecondNotification);
     _preferencesService.saveSecondSettings(newSettingsSecondNotification);
+  }
 
-    print('Time hour: $_secondNotificationHour');
+  void _savedSettingsThirdNotification() {
+    final newSettingsSecondNotification = SettingsNotification(
+        _thirdNotificationTitleController.text,
+        _thirdNotificationBodyController.text,
+        _thirdNotificationDescriptionController.text,
+        _thirdNotificationHour,
+        _thirdNotificationMinute,
+        selectedTimeThirdNotification);
+
+    _preferencesService.saveThirdSettings(newSettingsSecondNotification);
   }
 
   _titleAndBodyIsEmpty(String title, String body) {
