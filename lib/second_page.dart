@@ -1,3 +1,4 @@
+import 'package:eat_3h_remainder/hexcolor.dart';
 import 'package:flutter/material.dart';
 
 class SecondPage extends StatelessWidget {
@@ -7,14 +8,16 @@ class SecondPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Color _blue = HexColor("279AF1");
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(
           color: Colors.blueAccent, //change your color here
         ),
         backgroundColor: Colors.white,
-        title: const Text('Second Page'),
+        title: const Text('Description Page'),
         centerTitle: true,
+        titleTextStyle: TextStyle(color: _blue,fontSize: 30, fontWeight: FontWeight.bold),
       ),
       body: Container(
         alignment: Alignment.center,

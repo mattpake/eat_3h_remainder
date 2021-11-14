@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class SettingsFirstNotification {
+class SettingsNotification {
   final String title;
   final String description;
   final String payload;
@@ -8,6 +8,6 @@ class SettingsFirstNotification {
   final int minute;
   final TimeOfDay time;
 
-  SettingsFirstNotification(
+  SettingsNotification(
       this.title, this.description, this.payload, this.hour, this.minute, this.time); // TimeOfDay time;
 }

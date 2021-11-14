@@ -19,11 +19,14 @@ class Remainder extends StatefulWidget {
 class _RemainderState extends State<Remainder> {
   final _preferencesService = PreferencesService();
 
-  TimeOfDay selectedTime = TimeOfDay.now();
+  TimeOfDay selectedTimeFirstNotification = TimeOfDay.now();
+  TimeOfDay selectedTimeSecondNotification = TimeOfDay.now();
 
   final Color _white = const Color(0xFFF2F2F2);
   final Color _blue = HexColor("279AF1");
   final Color _yellow = HexColor("EAB464");
+  final Color _black = HexColor("322E18");
+  final Color _green = HexColor("7AE582");
 
   final _firstNotificationTitleController = TextEditingController();
   final _firstNotificationBodyController = TextEditingController();
@@ -31,15 +34,30 @@ class _RemainderState extends State<Remainder> {
   var _firstNotificationHour;
   var _firstNotificationMinute;
 
+  final _secondNotificationTitleController = TextEditingController();
+  final _secondNotificationBodyController = TextEditingController();
+  final _secondNotificationDescriptionController = TextEditingController();
+  var _secondNotificationHour;
+  var _secondNotificationMinute;
+
   void _populateFields() async {
-    final settings = await _preferencesService.getFirstSettings();
+    final firstSettings = await _preferencesService.getFirstSettings();
+    final secondSettings = await _preferencesService.getSecondSettings();
+
     setState(() {
-      _firstNotificationTitleController.text = settings.title;
-      _firstNotificationBodyController.text = settings.description;
-      _firstNotificationDescriptionController.text = settings.payload;
-      _firstNotificationHour = settings.hour;
-      _firstNotificationMinute = settings.minute;
-      selectedTime = settings.time;
+      _firstNotificationTitleController.text = firstSettings.title;
+      _firstNotificationBodyController.text = firstSettings.description;
+      _firstNotificationDescriptionController.text = firstSettings.payload;
+      _firstNotificationHour = firstSettings.hour;
+      _firstNotificationMinute = firstSettings.minute;
+      selectedTimeFirstNotification = firstSettings.time;
+
+      _secondNotificationTitleController.text = secondSettings.title;
+      _secondNotificationBodyController.text = secondSettings.description;
+      _secondNotificationDescriptionController.text = secondSettings.payload;
+      _secondNotificationHour = secondSettings.hour;
+      _secondNotificationMinute = secondSettings.minute;
+      selectedTimeSecondNotification = secondSettings.time;
     });
   }
 
@@ -138,223 +156,400 @@ class _RemainderState extends State<Remainder> {
       backgroundColor: _white,
       body: Builder(
         builder: (BuildContext context) => Container(
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
-                      side: const BorderSide(color: Colors.white)),
-                  child: Material(
-                    color: Colors.white,
-                    elevation: 14.0,
-                    borderRadius: BorderRadius.circular(24.0),
-                    shadowColor: const Color(0x802196F3),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.only(left: 16.0),
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                'First Notification',
-                                style: TextStyle(
-                                  color: Colors.black45,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 23,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 20, right: 12),
-                            child: TextFormField(
-                              controller: _firstNotificationTitleController,
-                              decoration: const InputDecoration(
-                                labelText: "Title",
-                                fillColor: Colors.white,
-                              ),
-                              validator: (val) {
-                                if (val!.isEmpty) {
-                                  return "Title cannot be empty";
-                                } else {
-                                  return null;
-                                }
-                              },
-                              keyboardType: TextInputType.text,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 20, right: 12),
-                            child: TextFormField(
-                              controller: _firstNotificationBodyController,
-                              decoration: const InputDecoration(
-                                labelText: "Body",
-                                fillColor: Colors.white,
-                              ),
-                              validator: (val) {
-                                if (val!.isEmpty) {
-                                  return "Body cannot be empty";
-                                } else {
-                                  return null;
-                                }
-                              },
-                              keyboardType: TextInputType.text,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 20, right: 12),
-                            child: TextFormField(
-                              // keyboardType: TextInputType.number,
-                              controller:
-                                  _firstNotificationDescriptionController,
-                              decoration: const InputDecoration(
-                                labelText: "Description",
-                                fillColor: Colors.white,
-                              ),
-                              validator: (val) {
-                                if (val!.isEmpty) {
-                                  return "Description cannot be empty";
-                                } else {
-                                  return null;
-                                }
-                              },
-                              keyboardType: TextInputType.text,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: 20, right: 12, top: 15),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                ElevatedButton(
-                                  onPressed: () {
-                                    // _firstNotificationHour = selectedTime.hour;
-                                    _selectTime(context);
-                                    // print("selected time: ${selectedTime.format()}");
-                                  },
-                                  child: Text(
-                                    "${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}",
-                                    style: const TextStyle(fontSize: 33),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                        side: const BorderSide(color: Colors.white)),
+                    child: Material(
+                      color: Colors.white,
+                      elevation: 14.0,
+                      borderRadius: BorderRadius.circular(24.0),
+                      shadowColor: const Color(0x802196F3),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(left: 16.0),
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  ' Breakfast ',
+                                  style: TextStyle(
+                                    backgroundColor: _black,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 23,
                                   ),
                                 ),
-                                // Text(
-                                //     "${selectedTime.hour}:${selectedTime.minute}"),
-                              ],
+                              ),
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: 20, right: 12, top: 0, bottom: 0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                TextButton(
-                                  onPressed: () {
-                                    _savedSettingsFirstNotification();
-                                    NotificationApi.showScheduleNotification(
-                                      id: 1,
-                                      title: _firstNotificationTitleController
-                                          .text,
-                                      body:
-                                          _firstNotificationBodyController.text,
-                                      payload:
-                                          _firstNotificationDescriptionController
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 20, right: 12),
+                              child: TextFormField(
+                                controller: _firstNotificationTitleController,
+                                decoration: const InputDecoration(
+                                  labelText: "Title",
+                                  fillColor: Colors.white,
+                                ),
+                                validator: (val) {
+                                  if (val!.isEmpty) {
+                                    return "Title cannot be empty";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                keyboardType: TextInputType.text,
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 20, right: 12),
+                              child: TextFormField(
+                                controller: _firstNotificationBodyController,
+                                decoration: const InputDecoration(
+                                  labelText: "Body",
+                                  fillColor: Colors.white,
+                                ),
+                                validator: (val) {
+                                  if (val!.isEmpty) {
+                                    return "Body cannot be empty";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                keyboardType: TextInputType.text,
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 20, right: 12),
+                              child: TextFormField(
+                                // keyboardType: TextInputType.number,
+                                controller:
+                                    _firstNotificationDescriptionController,
+                                decoration: const InputDecoration(
+                                  labelText: "Description",
+                                  fillColor: Colors.white,
+                                ),
+                                validator: (val) {
+                                  if (val!.isEmpty) {
+                                    return "Description cannot be empty";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                keyboardType: TextInputType.text,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 20, right: 12, top: 15),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      // _firstNotificationHour = selectedTime.hour;
+                                      _selectTimeFirstNotification(context);
+                                      // print("selected time: ${selectedTime.format()}");
+                                    },
+                                    child: Text(
+                                      "${selectedTimeFirstNotification.hour.toString().padLeft(2, '0')}:${selectedTimeFirstNotification.minute.toString().padLeft(2, '0')}",
+                                      style: const TextStyle(fontSize: 33),
+                                    ),
+                                  ),
+                                  // Text(
+                                  //     "${selectedTime.hour}:${selectedTime.minute}"),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 20, right: 12, top: 0, bottom: 0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      _savedSettingsFirstNotification();
+                                      NotificationApi.showScheduleNotification(
+                                        id: 1,
+                                        title: _firstNotificationTitleController
+                                            .text,
+                                        body: _firstNotificationBodyController
+                                            .text,
+                                        payload:
+                                            _firstNotificationDescriptionController
+                                                .text,
+                                        time: Time(
+                                            selectedTimeFirstNotification.hour,
+                                            selectedTimeFirstNotification
+                                                .minute,
+                                            0),
+                                        scheduleDate: DateTime.now(),
+                                      );
+                                      _titleAndBodyIsEmpty(
+                                          _firstNotificationTitleController
                                               .text,
-                                      time: Time(selectedTime.hour,
-                                          selectedTime.minute, 0),
-                                      scheduleDate: DateTime.now(),
-                                    );
-                                    _titleAndBodyIsEmpty(
-                                        _firstNotificationTitleController.text,
-                                        _firstNotificationBodyController.text);
-                                  },
-                                  child: const Text(
-                                    'Schedule Notification',
+                                          _firstNotificationBodyController
+                                              .text);
+                                    },
+                                    child: const Text(
+                                      'Schedule Notification',
+                                    ),
                                   ),
-                                ),
-                                // Text(
-                                //     "${selectedTime.hour}:${selectedTime.minute}"),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              // Padding(
-              //   padding: EdgeInsets.only(top: 3),
-              //   child: InkWell(
-              //     onTap: () {
-              //       NotificationApi.showScheduleNotification(
-              //         title: 'Scheduled Notification',
-              //         body: 'This gonna work.',
-              //         payload: 'payload message',
-              //         scheduleDate: DateTime.now().add(
-              //           const Duration(seconds: 12),
-              //         ),
-              //       );
-              //       const snackBar = SnackBar(
-              //         content: Text(
-              //           'Scheduled in 12 Seconds.',
-              //           style: TextStyle(fontSize: 24),
-              //         ),
-              //         backgroundColor: Colors.yellow,
-              //       );
-              //       ScaffoldMessenger.of(context)
-              //         ..removeCurrentSnackBar()
-              //         ..showSnackBar(snackBar);
-              //     },
-              //     child: ClayContainer(
-              //       width: 350,
-              //       height: 40,
-              //       borderRadius: 7,
-              //       surfaceColor: _white,
-              //       child: Center(
-              //         child: ClayText(
-              //           "Scheduled notification",
-              //           emboss: true,
-              //           color: _white,
-              //           parentColor: _white,
-              //           depth: 100,
-              //           style: const TextStyle(fontSize: 17),
-              //         ),
-              //       ),
-              //     ),
-              //   ),
-              // ),
-            ],
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                        side: const BorderSide(color: Colors.white)),
+                    child: Material(
+                      color: Colors.white,
+                      elevation: 14.0,
+                      borderRadius: BorderRadius.circular(24.0),
+                      shadowColor: const Color(0x802196F3),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(left: 16.0),
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  ' Morning Snack ',
+                                  style: TextStyle(
+                                    backgroundColor: _black,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 23,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 20, right: 12),
+                              child: TextFormField(
+                                controller: _secondNotificationTitleController,
+                                decoration: const InputDecoration(
+                                  labelText: "Title",
+                                  fillColor: Colors.white,
+                                ),
+                                validator: (val) {
+                                  if (val!.isEmpty) {
+                                    return "Title cannot be empty";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                keyboardType: TextInputType.text,
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 20, right: 12),
+                              child: TextFormField(
+                                controller: _secondNotificationBodyController,
+                                decoration: const InputDecoration(
+                                  labelText: "Body",
+                                  fillColor: Colors.white,
+                                ),
+                                validator: (val) {
+                                  if (val!.isEmpty) {
+                                    return "Body cannot be empty";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                keyboardType: TextInputType.text,
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 20, right: 12),
+                              child: TextFormField(
+                                // keyboardType: TextInputType.number,
+                                controller:
+                                    _secondNotificationDescriptionController,
+                                decoration: const InputDecoration(
+                                  labelText: "Description",
+                                  fillColor: Colors.white,
+                                ),
+                                validator: (val) {
+                                  if (val!.isEmpty) {
+                                    return "Description cannot be empty";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                keyboardType: TextInputType.text,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 20, right: 12, top: 15),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      // _firstNotificationHour = selectedTime.hour;
+                                      _selectTimeSecondNotification(context);
+                                      // print("selected time: ${selectedTime.format()}");
+                                    },
+                                    child: Text(
+                                      "${selectedTimeSecondNotification.hour.toString().padLeft(2, '0')}:${selectedTimeSecondNotification.minute.toString().padLeft(2, '0')}",
+                                      style: const TextStyle(fontSize: 33),
+                                    ),
+                                  ),
+                                  // Text(
+                                  //     "${selectedTime.hour}:${selectedTime.minute}"),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 20, right: 12, top: 0, bottom: 0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      _savedSettingsSecondNotification();
+                                      NotificationApi.showScheduleNotification(
+                                        id: 1,
+                                        title:
+                                            _secondNotificationTitleController
+                                                .text,
+                                        body: _secondNotificationBodyController
+                                            .text,
+                                        payload:
+                                            _secondNotificationDescriptionController
+                                                .text,
+                                        time: Time(
+                                            selectedTimeSecondNotification.hour,
+                                            selectedTimeSecondNotification
+                                                .minute,
+                                            0),
+                                        scheduleDate: DateTime.now(),
+                                      );
+                                      _titleAndBodyIsEmpty(
+                                          _secondNotificationTitleController
+                                              .text,
+                                          _secondNotificationBodyController
+                                              .text);
+                                    },
+                                    child: const Text(
+                                      'Schedule Notification',
+                                    ),
+                                  ),
+                                  // Text(
+                                  //     "${selectedTime.hour}:${selectedTime.minute}"),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  _selectTime(BuildContext context) async {
+  _selectTimeFirstNotification(BuildContext context) async {
     final TimeOfDay? timeOfDay = await showTimePicker(
       context: context,
-      initialTime: selectedTime,
+      initialTime: selectedTimeFirstNotification,
       initialEntryMode: TimePickerEntryMode.dial,
       confirmText: "CONFIRM",
       cancelText: "NOT NOW",
       helpText: "",
     );
-    if (timeOfDay != null && timeOfDay != selectedTime) {
+    if (timeOfDay != null && timeOfDay != selectedTimeFirstNotification) {
       setState(
         () {
-          selectedTime = timeOfDay;
-          _firstNotificationHour = selectedTime.hour;
-          _firstNotificationMinute = selectedTime.minute;
+          selectedTimeFirstNotification = timeOfDay;
+          _firstNotificationHour = selectedTimeFirstNotification.hour;
+          _firstNotificationMinute = selectedTimeFirstNotification.minute;
         },
       );
     }
+  }
+
+  _selectTimeSecondNotification(BuildContext context) async {
+    final TimeOfDay? timeOfDay = await showTimePicker(
+      context: context,
+      initialTime: selectedTimeSecondNotification,
+      initialEntryMode: TimePickerEntryMode.dial,
+      confirmText: "CONFIRM",
+      cancelText: "NOT NOW",
+      helpText: "",
+    );
+    if (timeOfDay != null && timeOfDay != selectedTimeSecondNotification) {
+      setState(
+        () {
+          selectedTimeSecondNotification = timeOfDay;
+          _secondNotificationHour = selectedTimeSecondNotification.hour;
+          _secondNotificationMinute = selectedTimeSecondNotification.minute;
+        },
+      );
+    }
+  }
+
+  void _savedSettingsFirstNotification() {
+    final newSettingsFirstNotification = SettingsNotification(
+        _firstNotificationTitleController.text,
+        _firstNotificationBodyController.text,
+        _firstNotificationDescriptionController.text,
+        _firstNotificationHour,
+        _firstNotificationMinute,
+        selectedTimeFirstNotification);
+
+    print(newSettingsFirstNotification);
+    _preferencesService.saveFirstSettings(newSettingsFirstNotification);
+
+    print('Time hour: $_firstNotificationHour');
+  }
+
+  void _savedSettingsSecondNotification() {
+    final newSettingsSecondNotification = SettingsNotification(
+        _secondNotificationTitleController.text,
+        _secondNotificationBodyController.text,
+        _secondNotificationDescriptionController.text,
+        _secondNotificationHour,
+        _secondNotificationMinute,
+        selectedTimeSecondNotification);
+
+    print(newSettingsSecondNotification);
+    _preferencesService.saveSecondSettings(newSettingsSecondNotification);
+
+    print('Time hour: $_secondNotificationHour');
   }
 
   _titleAndBodyIsEmpty(String title, String body) {
@@ -362,28 +557,24 @@ class _RemainderState extends State<Remainder> {
       final snackBar = SnackBar(
         content: const Text(
           'Notification could not be scheduled without Title or Body.',
-          style: TextStyle(fontSize: 24),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         backgroundColor: _yellow,
       );
       ScaffoldMessenger.of(context)
         ..removeCurrentSnackBar()
         ..showSnackBar(snackBar);
+    } else {
+      final snackBar = SnackBar(
+        content: const Text(
+          'Notification scheduled.',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: _green,
+      );
+      ScaffoldMessenger.of(context)
+        ..removeCurrentSnackBar()
+        ..showSnackBar(snackBar);
     }
-  }
-
-  void _savedSettingsFirstNotification() {
-    final newSettingsFirstNotification = SettingsFirstNotification(
-        _firstNotificationTitleController.text,
-        _firstNotificationBodyController.text,
-        _firstNotificationDescriptionController.text,
-        _firstNotificationHour,
-        _firstNotificationMinute,
-        selectedTime);
-
-    print(newSettingsFirstNotification);
-    _preferencesService.saveFirstSettings(newSettingsFirstNotification);
-
-    print('Time hour: $_firstNotificationHour');
   }
 }
