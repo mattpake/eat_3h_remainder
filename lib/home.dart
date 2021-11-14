@@ -22,6 +22,10 @@ class _RemainderState extends State<Remainder> {
   TimeOfDay selectedTimeFirstNotification = TimeOfDay.now();
   TimeOfDay selectedTimeSecondNotification = TimeOfDay.now();
   TimeOfDay selectedTimeThirdNotification = TimeOfDay.now();
+  TimeOfDay selectedTimeFourthNotification = TimeOfDay.now();
+  TimeOfDay selectedTimeFifthNotification = TimeOfDay.now();
+  TimeOfDay selectedTimeSixthNotification = TimeOfDay.now();
+
 
   final Color _white = const Color(0xFFF2F2F2);
   final Color _blue = HexColor("279AF1");
@@ -47,10 +51,32 @@ class _RemainderState extends State<Remainder> {
   var _thirdNotificationHour;
   var _thirdNotificationMinute;
 
+  final _fourthNotificationTitleController = TextEditingController();
+  final _fourthNotificationBodyController = TextEditingController();
+  final _fourthNotificationDescriptionController = TextEditingController();
+  var _fourthNotificationHour;
+  var _fourthNotificationMinute;
+
+  final _fifthNotificationTitleController = TextEditingController();
+  final _fifthNotificationBodyController = TextEditingController();
+  final _fifthNotificationDescriptionController = TextEditingController();
+  var _fifthNotificationHour;
+  var _fifthNotificationMinute;
+
+  final _sixthNotificationTitleController = TextEditingController();
+  final _sixthNotificationBodyController = TextEditingController();
+  final _sixthNotificationDescriptionController = TextEditingController();
+  var _sixthNotificationHour;
+  var _sixthNotificationMinute;
+
   void _populateFields() async {
     final firstSettings = await _preferencesService.getFirstSettings();
     final secondSettings = await _preferencesService.getSecondSettings();
     final thirdSettings = await _preferencesService.getThirdSettings();
+    final fourthSettings = await _preferencesService.getFourthSettings();
+    final fifthSettings = await _preferencesService.getFifthSettings();
+    final sixthSettings = await _preferencesService.getSixthSettings();
+
 
     setState(() {
       _firstNotificationTitleController.text = firstSettings.title;
@@ -73,6 +99,27 @@ class _RemainderState extends State<Remainder> {
       _thirdNotificationHour = thirdSettings.hour;
       _thirdNotificationMinute = thirdSettings.minute;
       selectedTimeThirdNotification = thirdSettings.time;
+
+      _fourthNotificationTitleController.text = fourthSettings.title;
+      _fourthNotificationBodyController.text = fourthSettings.description;
+      _fourthNotificationDescriptionController.text = fourthSettings.payload;
+      _fourthNotificationHour = fourthSettings.hour;
+      _fourthNotificationMinute = fourthSettings.minute;
+      selectedTimeFourthNotification = fourthSettings.time;
+
+      _fifthNotificationTitleController.text = fifthSettings.title;
+      _fifthNotificationBodyController.text = fifthSettings.description;
+      _fifthNotificationDescriptionController.text = fifthSettings.payload;
+      _fifthNotificationHour = fifthSettings.hour;
+      _fifthNotificationMinute = fifthSettings.minute;
+      selectedTimeFifthNotification = fifthSettings.time;
+
+      _sixthNotificationTitleController.text = sixthSettings.title;
+      _sixthNotificationBodyController.text = sixthSettings.description;
+      _sixthNotificationDescriptionController.text = sixthSettings.payload;
+      _sixthNotificationHour = sixthSettings.hour;
+      _sixthNotificationMinute = sixthSettings.minute;
+      selectedTimeSixthNotification = sixthSettings.time;
     });
   }
 
@@ -397,7 +444,7 @@ class _RemainderState extends State<Remainder> {
                                     onPressed: () {
                                       _savedSettingsSecondNotification();
                                       NotificationApi.showScheduleNotification(
-                                        id: 1,
+                                        id: 2,
                                         title:
                                             _secondNotificationTitleController
                                                 .text,
@@ -556,7 +603,7 @@ class _RemainderState extends State<Remainder> {
                                     onPressed: () {
                                       _savedSettingsThirdNotification();
                                       NotificationApi.showScheduleNotification(
-                                        id: 1,
+                                        id: 3,
                                         title: _thirdNotificationTitleController
                                             .text,
                                         body: _thirdNotificationBodyController
@@ -592,6 +639,470 @@ class _RemainderState extends State<Remainder> {
                     ),
                   ),
                 ),
+
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                        side: const BorderSide(color: Colors.white)),
+                    child: Material(
+                      color: Colors.white,
+                      elevation: 14.0,
+                      borderRadius: BorderRadius.circular(24.0),
+                      shadowColor: const Color(0x802196F3),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(left: 16.0),
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  ' Afternoon Snack ',
+                                  style: TextStyle(
+                                    backgroundColor: _black,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 23,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 20, right: 12),
+                              child: TextFormField(
+                                controller: _fourthNotificationTitleController,
+                                decoration: const InputDecoration(
+                                  labelText: "Title",
+                                  fillColor: Colors.white,
+                                ),
+                                validator: (val) {
+                                  if (val!.isEmpty) {
+                                    return "Title cannot be empty";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                keyboardType: TextInputType.text,
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 20, right: 12),
+                              child: TextFormField(
+                                controller: _fourthNotificationBodyController,
+                                decoration: const InputDecoration(
+                                  labelText: "Body",
+                                  fillColor: Colors.white,
+                                ),
+                                validator: (val) {
+                                  if (val!.isEmpty) {
+                                    return "Body cannot be empty";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                keyboardType: TextInputType.text,
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 20, right: 12),
+                              child: TextFormField(
+                                // keyboardType: TextInputType.number,
+                                controller:
+                                    _fourthNotificationDescriptionController,
+                                decoration: const InputDecoration(
+                                  labelText: "Description",
+                                  fillColor: Colors.white,
+                                ),
+                                validator: (val) {
+                                  if (val!.isEmpty) {
+                                    return "Description cannot be empty";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                keyboardType: TextInputType.text,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 20, right: 12, top: 15),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      _selectTimeFourthNotification(context);
+                                    },
+                                    child: Text(
+                                      "${selectedTimeFourthNotification.hour.toString().padLeft(2, '0')}:${selectedTimeFourthNotification.minute.toString().padLeft(2, '0')}",
+                                      style: const TextStyle(fontSize: 33),
+                                    ),
+                                  ),
+                                  // Text(
+                                  //     "${selectedTime.hour}:${selectedTime.minute}"),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 20, right: 12, top: 0, bottom: 0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      _savedSettingsFourthNotification();
+                                      NotificationApi.showScheduleNotification(
+                                        id: 4,
+                                        title:
+                                            _fourthNotificationTitleController
+                                                .text,
+                                        body: _fourthNotificationBodyController
+                                            .text,
+                                        payload:
+                                            _fourthNotificationDescriptionController
+                                                .text,
+                                        time: Time(
+                                            selectedTimeFourthNotification.hour,
+                                            selectedTimeFourthNotification
+                                                .minute,
+                                            0),
+                                        scheduleDate: DateTime.now(),
+                                      );
+                                      _titleAndBodyIsEmpty(
+                                          _fourthNotificationTitleController
+                                              .text,
+                                          _fourthNotificationBodyController
+                                              .text);
+                                    },
+                                    child: const Text(
+                                      'Schedule Notification',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                        side: const BorderSide(color: Colors.white)),
+                    child: Material(
+                      color: Colors.white,
+                      elevation: 14.0,
+                      borderRadius: BorderRadius.circular(24.0),
+                      shadowColor: const Color(0x802196F3),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(left: 16.0),
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  ' Dinner ',
+                                  style: TextStyle(
+                                    backgroundColor: _black,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 23,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                              const EdgeInsets.only(left: 20, right: 12),
+                              child: TextFormField(
+                                controller: _fifthNotificationTitleController,
+                                decoration: const InputDecoration(
+                                  labelText: "Title",
+                                  fillColor: Colors.white,
+                                ),
+                                validator: (val) {
+                                  if (val!.isEmpty) {
+                                    return "Title cannot be empty";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                keyboardType: TextInputType.text,
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                              const EdgeInsets.only(left: 20, right: 12),
+                              child: TextFormField(
+                                controller: _fifthNotificationBodyController,
+                                decoration: const InputDecoration(
+                                  labelText: "Body",
+                                  fillColor: Colors.white,
+                                ),
+                                validator: (val) {
+                                  if (val!.isEmpty) {
+                                    return "Body cannot be empty";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                keyboardType: TextInputType.text,
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                              const EdgeInsets.only(left: 20, right: 12),
+                              child: TextFormField(
+                                // keyboardType: TextInputType.number,
+                                controller:
+                                _fifthNotificationDescriptionController,
+                                decoration: const InputDecoration(
+                                  labelText: "Description",
+                                  fillColor: Colors.white,
+                                ),
+                                validator: (val) {
+                                  if (val!.isEmpty) {
+                                    return "Description cannot be empty";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                keyboardType: TextInputType.text,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 20, right: 12, top: 15),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      _selectTimeFifthNotification(context);
+                                    },
+                                    child: Text(
+                                      "${selectedTimeFifthNotification.hour.toString().padLeft(2, '0')}:${selectedTimeFifthNotification.minute.toString().padLeft(2, '0')}",
+                                      style: const TextStyle(fontSize: 33),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 20, right: 12, top: 0, bottom: 0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      _savedSettingsFifthNotification();
+                                      NotificationApi.showScheduleNotification(
+                                        id: 5,
+                                        title:
+                                        _fifthNotificationTitleController
+                                            .text,
+                                        body: _fifthNotificationBodyController
+                                            .text,
+                                        payload:
+                                        _fifthNotificationDescriptionController
+                                            .text,
+                                        time: Time(
+                                            selectedTimeFifthNotification.hour,
+                                            selectedTimeFifthNotification
+                                                .minute,
+                                            0),
+                                        scheduleDate: DateTime.now(),
+                                      );
+                                      _titleAndBodyIsEmpty(
+                                          _fifthNotificationTitleController
+                                              .text,
+                                          _fifthNotificationBodyController
+                                              .text);
+                                    },
+                                    child: const Text(
+                                      'Schedule Notification',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                        side: const BorderSide(color: Colors.white)),
+                    child: Material(
+                      color: Colors.white,
+                      elevation: 14.0,
+                      borderRadius: BorderRadius.circular(24.0),
+                      shadowColor: const Color(0x802196F3),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(left: 16.0),
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  ' Dinner Snack ',
+                                  style: TextStyle(
+                                    backgroundColor: _black,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 23,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                              const EdgeInsets.only(left: 20, right: 12),
+                              child: TextFormField(
+                                controller: _sixthNotificationTitleController,
+                                decoration: const InputDecoration(
+                                  labelText: "Title",
+                                  fillColor: Colors.white,
+                                ),
+                                validator: (val) {
+                                  if (val!.isEmpty) {
+                                    return "Title cannot be empty";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                keyboardType: TextInputType.text,
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                              const EdgeInsets.only(left: 20, right: 12),
+                              child: TextFormField(
+                                controller: _sixthNotificationBodyController,
+                                decoration: const InputDecoration(
+                                  labelText: "Body",
+                                  fillColor: Colors.white,
+                                ),
+                                validator: (val) {
+                                  if (val!.isEmpty) {
+                                    return "Body cannot be empty";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                keyboardType: TextInputType.text,
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                              const EdgeInsets.only(left: 20, right: 12),
+                              child: TextFormField(
+                                controller:
+                                _sixthNotificationDescriptionController,
+                                decoration: const InputDecoration(
+                                  labelText: "Description",
+                                  fillColor: Colors.white,
+                                ),
+                                validator: (val) {
+                                  if (val!.isEmpty) {
+                                    return "Description cannot be empty";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                keyboardType: TextInputType.text,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 20, right: 12, top: 15),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      _selectTimeSixthNotification(context);
+                                    },
+                                    child: Text(
+                                      "${selectedTimeSixthNotification.hour.toString().padLeft(2, '0')}:${selectedTimeSixthNotification.minute.toString().padLeft(2, '0')}",
+                                      style: const TextStyle(fontSize: 33),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 20, right: 12, top: 0, bottom: 0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      _savedSettingsSixthNotification();
+                                      NotificationApi.showScheduleNotification(
+                                        id: 6,
+                                        title:
+                                        _sixthNotificationTitleController
+                                            .text,
+                                        body: _sixthNotificationBodyController
+                                            .text,
+                                        payload:
+                                        _sixthNotificationDescriptionController
+                                            .text,
+                                        time: Time(
+                                            selectedTimeSixthNotification.hour,
+                                            selectedTimeSixthNotification
+                                                .minute,
+                                            0),
+                                        scheduleDate: DateTime.now(),
+                                      );
+                                      _titleAndBodyIsEmpty(
+                                          _sixthNotificationTitleController
+                                              .text,
+                                          _sixthNotificationBodyController
+                                              .text);
+                                    },
+                                    child: const Text(
+                                      'Schedule Notification',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
               ],
             ),
           ),
@@ -660,6 +1171,66 @@ class _RemainderState extends State<Remainder> {
     }
   }
 
+  _selectTimeFourthNotification(BuildContext context) async {
+    final TimeOfDay? timeOfDay = await showTimePicker(
+      context: context,
+      initialTime: selectedTimeFourthNotification,
+      initialEntryMode: TimePickerEntryMode.dial,
+      confirmText: "CONFIRM",
+      cancelText: "NOT NOW",
+      helpText: "",
+    );
+    if (timeOfDay != null && timeOfDay != selectedTimeFourthNotification) {
+      setState(
+            () {
+          selectedTimeFourthNotification = timeOfDay;
+          _fourthNotificationHour = selectedTimeFourthNotification.hour;
+          _fourthNotificationMinute = selectedTimeFourthNotification.minute;
+        },
+      );
+    }
+  }
+
+  _selectTimeFifthNotification(BuildContext context) async {
+    final TimeOfDay? timeOfDay = await showTimePicker(
+      context: context,
+      initialTime: selectedTimeFifthNotification,
+      initialEntryMode: TimePickerEntryMode.dial,
+      confirmText: "CONFIRM",
+      cancelText: "NOT NOW",
+      helpText: "",
+    );
+    if (timeOfDay != null && timeOfDay != selectedTimeFifthNotification) {
+      setState(
+            () {
+          selectedTimeFifthNotification = timeOfDay;
+          _fifthNotificationHour = selectedTimeFifthNotification.hour;
+          _fifthNotificationMinute = selectedTimeFifthNotification.minute;
+        },
+      );
+    }
+  }
+
+  _selectTimeSixthNotification(BuildContext context) async {
+    final TimeOfDay? timeOfDay = await showTimePicker(
+      context: context,
+      initialTime: selectedTimeSixthNotification,
+      initialEntryMode: TimePickerEntryMode.dial,
+      confirmText: "CONFIRM",
+      cancelText: "NOT NOW",
+      helpText: "",
+    );
+    if (timeOfDay != null && timeOfDay != selectedTimeSixthNotification) {
+      setState(
+            () {
+          selectedTimeSixthNotification = timeOfDay;
+          _sixthNotificationHour = selectedTimeSixthNotification.hour;
+          _sixthNotificationMinute = selectedTimeSixthNotification.minute;
+        },
+      );
+    }
+  }
+
   void _savedSettingsFirstNotification() {
     final newSettingsFirstNotification = SettingsNotification(
         _firstNotificationTitleController.text,
@@ -694,6 +1265,42 @@ class _RemainderState extends State<Remainder> {
         selectedTimeThirdNotification);
 
     _preferencesService.saveThirdSettings(newSettingsSecondNotification);
+  }
+
+  void _savedSettingsFourthNotification() {
+    final newSettingsSecondNotification = SettingsNotification(
+        _fourthNotificationTitleController.text,
+        _fourthNotificationBodyController.text,
+        _fourthNotificationDescriptionController.text,
+        _fourthNotificationHour,
+        _fourthNotificationMinute,
+        selectedTimeFourthNotification);
+
+    _preferencesService.saveFourthSettings(newSettingsSecondNotification);
+  }
+
+  void _savedSettingsFifthNotification() {
+    final newSettingsSecondNotification = SettingsNotification(
+        _fifthNotificationTitleController.text,
+        _fifthNotificationBodyController.text,
+        _fifthNotificationDescriptionController.text,
+        _fifthNotificationHour,
+        _fifthNotificationMinute,
+        selectedTimeFifthNotification);
+
+    _preferencesService.saveFifthSettings(newSettingsSecondNotification);
+  }
+
+  void _savedSettingsSixthNotification() {
+    final newSettingsSecondNotification = SettingsNotification(
+        _sixthNotificationTitleController.text,
+        _sixthNotificationBodyController.text,
+        _sixthNotificationDescriptionController.text,
+        _sixthNotificationHour,
+        _sixthNotificationMinute,
+        selectedTimeSixthNotification);
+
+    _preferencesService.saveSixthSettings(newSettingsSecondNotification);
   }
 
   _titleAndBodyIsEmpty(String title, String body) {
