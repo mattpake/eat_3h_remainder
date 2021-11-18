@@ -22,7 +22,8 @@ void main() {
   //
   // var initializationSettings = InitializationSettings(android: initializationSettingsAndroid,iOS: initializationSettingsIOS);
   runApp(
-    new MaterialApp(
+    const MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Remainder(),
     ),
   );
